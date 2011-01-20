@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-dao-map-helper - Simplify the creation of Dao classes and the mapping between relational table and class. Kind of a low level ORM, where you can still use SQL and then map the result set to the class objects.
+dao-map-helper - Command line utility that simplifies the creation of Dao classes and the mapping between relational table and class. Kind of a low level ORM, where you can still use SQL and then map the result set to the class objects. Creates a skeleton of dao class with mapping to database table.
 
 =cut
 
@@ -17,12 +17,9 @@ dao-map-helper [options]
 
 Options:
 
-    --dsn=dsn          DSN(required)
+    --dsn=dsn        DSN(required)
     --user=user      User Name for logging into database.(required)
     --pwd=pwd        Password for logging into database.(required)
-    
-Available Licenses:
-    perl, bsd, gpl, lgpl, mit
 
 Example:
 

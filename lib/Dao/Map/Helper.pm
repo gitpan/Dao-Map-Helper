@@ -21,12 +21,12 @@ Version 0.01
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
 Simplify the creation of Dao classes and the mapping between relational table and class.
-    
+
     dao-map-helper --dsn=dbi:mysql:mydb:localhost:3306 --user=root --pwd=pwd
 
 =head1 Description
@@ -41,7 +41,7 @@ These are just class files with attributes in them.
 
 Where do i use it?
 Every time you fetch a result set from the database using DBI module like
-    
+
     ...
     $sth = $dbh->prepare("select * from user");
     $sth->execute();
@@ -49,10 +49,10 @@ Every time you fetch a result set from the database using DBI module like
         push(@user_arry2,$row);
     }
     ...
-    
+
 Template toolkit file would look like:
-    
-    ...    
+
+    ...
     [% FOREACH user IN user_arry %]
         [% user.id %] : [% user.username %]
     [% END %]
@@ -69,7 +69,7 @@ The new approach would be
     $sth->execute();
     while ($row = $sth->fetchrow_hashref() ) {
         my $user_obj = web_app::Vo::UserVo->new($row);
-        push(@user_arry,$user_obj);    
+        push(@user_arry,$user_obj);
     }
     ...
 
@@ -97,13 +97,12 @@ The mapping file looks like this:
         bless($self);
         return $self;
     }
-    
+
 So if the username in the database changes to 'user_name' you dont have to modify every template view where it is used. You just need to change this mapping file.
 Also the mapping between the database and class attributes happens in this class. So it's kind of a low level ORM, where you can still use SQL and then map the result set to the class objects.
 
 How do i create the mapping file?
-If your database has say 20 tables, creating a mapping file similar to the one above is tedious task. Instead you can use the Dao::Map::Helper module which will create these classes for you. Just copy them over to the right folder and sta
-rt using.
+If your database has say 20 tables, creating a mapping file similar to the one above is tedious task. Instead you can use the Dao::Map::Helper module which will create these classes for you. Just copy them over to the right folder and start using.
 
 What is the command i need to run?
 After you install Dao::Map::Helper the helper script is available in the command line.
@@ -116,11 +115,6 @@ Examples:
 What are the dependencies and limitations?
 As of now it just works with mysql.
 
-The modules required are as mentioned below. Make sure you have these installed.
-use DBI;
-use DBD::mysql;
-use Error qw{:try};
-
 =cut
 ##################################################################################################
 sub Main{
@@ -128,7 +122,7 @@ sub Main{
 
   my ($dsn,$user,$pwd);
 
-      
+
   GetOptions(
         'dsn=s'    => \$dsn,
         'user=s'   => \$user,
@@ -147,24 +141,24 @@ sub Main{
 }
 ##################################################################################################
 sub create_dao{
-    
+
     my ($dsn,$user,$pwd,$file) = @_;
      my $dbh = DBI->connect( $dsn , $user, $pwd ) ||  croak("Unable to connect: $DBI::errstr\n");
     try{
-        
+
         my $sth1;
-        $sth1 = $dbh->table_info(undef,'mydb', '%', '');
+        $sth1 = $dbh->table_info();
         my $table_info = $sth1->fetchall_hashref('TABLE_NAME');
         foreach my $table_name ( keys %$table_info )
         {
             print  "Generating Vo for " . $table_name . ".\n";
-            my $sth2 = $dbh->column_info(undef, 'mydb', $table_name, '%');
+            my $sth2 = $dbh->column_info(undef, '%', $table_name, '%');
             my $col_info = $sth2->fetchall_hashref('COLUMN_NAME');
-            
+
             open(FILE,">$table_name"."Vo.pm");
-            
-            
-            
+
+
+
             print FILE "package Vo::".$table_name."Vo;\n";
             print FILE "use strict;\n";
             print FILE "use warnings;\n";
@@ -172,22 +166,22 @@ sub create_dao{
             print FILE "\tshift;\n";
             print FILE "\tmy(\$row) = \@_;\n";
             print FILE "\tmy \$self = {};\n";
-            
+
             foreach my $column_name ( keys %$col_info )
             {
               print FILE "\t\$self->{$column_name}=\$row->{$column_name} || \"\";\n";
             }
             $sth2->finish();
-        
-            print FILE "\tbless(\$self);\n";    
+
+            print FILE "\tbless(\$self);\n";
             print FILE "\treturn \$self;\n";
             print FILE "}\n";
-            
+
             close(FILE);
-            
+
         }
         $sth1->finish();
-            
+
     }
     catch Error with {
 

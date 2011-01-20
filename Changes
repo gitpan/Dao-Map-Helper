@@ -3,3 +3,5 @@ Revision history for Dao-Map-Helper
 0.01    Sat Jan 01 12:00:00 IST 2011
         First version, Works for mysql database only.
 
+0.02    Thu Jan 20 12:00:00 IST 2011
+        Fixed the database name issue.
