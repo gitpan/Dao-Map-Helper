@@ -1,4 +1,4 @@
-Dao-Map-Helper 0.02
+Dao-Map-Helper
 
 Simplify the creation of Dao classes and the mapping between relational table and class. Kind of a low level ORM, where you can still use SQL and then map the result set to the class objects
 
@@ -6,10 +6,10 @@ INSTALLATION
 
 To install this module, run the following commands:
 
-    perl Makefile.PL
-    make
-    make test
-    make install
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
 
 SUPPORT AND DOCUMENTATION
 

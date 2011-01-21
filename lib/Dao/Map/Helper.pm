@@ -1,5 +1,5 @@
 package Dao::Map::Helper;
-use warnings;
+#use warnings;
 use strict;
 use DBI;
 use DBD::mysql;
@@ -17,11 +17,11 @@ Dao::Map::Helper - Simplify the creation of DAO (Data Access Objects). Kind of a
 
 =head1 VERSION
 
-Version 0.01
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -152,7 +152,7 @@ sub create_dao{
         foreach my $table_name ( keys %$table_info )
         {
             print  "Generating Vo for " . $table_name . ".\n";
-            my $sth2 = $dbh->column_info(undef, '%', $table_name, '%');
+            my $sth2 = $dbh->column_info(undef, undef, $table_name, undef);
             my $col_info = $sth2->fetchall_hashref('COLUMN_NAME');
 
             open(FILE,">$table_name"."Vo.pm");
