@@ -17,13 +17,14 @@ dao-map-helper [options]
 
 Options:
 
-    --dsn=dsn        DSN(required)
-    --user=user      User Name for logging into database.(required)
-    --pwd=pwd        Password for logging into database.(required)
+    --dsn=dsn         DSN(required)
+    --user=user       User Name for logging into database.(required)
+    --pwd=pwd         Password for logging into database.(required)
+    --package=package Package Name.(required)
 
 Example:
 
-    dao-map-helper --dsn=dbi:mysql:mydb:localhost:3306 --user=root --pwd=pwd
+    dao-map-helper --dsn=dbi:mysql:mydb:localhost:3306 --user=root --pwd=pwd --package=MyApp
 
 =head1 DESCRIPTION
 

@@ -2,6 +2,8 @@ Dao-Map-Helper
 
 Simplify the creation of Dao classes and the mapping between relational table and class. Kind of a low level ORM, where you can still use SQL and then map the result set to the class objects
 
+Reference Link: https://sites.google.com/site/arjunwebworld/Home/programming/create-cpan-module
+
 INSTALLATION
 
 To install this module, run the following commands:

@@ -7,4 +7,7 @@ Revision history for Dao-Map-Helper
         Fixed the database name issue.
 
 0.03    2011-01-21
-        Fixed the database table access issue.        
+        Fixed the database table access issue.
+        
+0.04    2011-02-12
+        Added package name to parameter list.                        

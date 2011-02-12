@@ -17,17 +17,17 @@ Dao::Map::Helper - Simplify the creation of DAO (Data Access Objects). Kind of a
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 SYNOPSIS
 
 Simplify the creation of Dao classes and the mapping between relational table and class.
 
-    dao-map-helper --dsn=dbi:mysql:mydb:localhost:3306 --user=root --pwd=pwd
+    dao-map-helper --dsn=dbi:mysql:mydb:localhost:3306 --user=root --pwd=pwd --package=package
 
 =head1 Description
 
@@ -78,7 +78,7 @@ This way you get to create a mapping class that you can change if there is a cha
 
 The mapping file looks like this:
 
-    package Vo::userVo;
+    package MyApp::Vo::userVo;
     use strict;
     use warnings;
         sub new {
@@ -97,6 +97,7 @@ The mapping file looks like this:
         bless($self);
         return $self;
     }
+    return 1;
 
 So if the username in the database changes to 'user_name' you dont have to modify every template view where it is used. You just need to change this mapping file.
 Also the mapping between the database and class attributes happens in this class. So it's kind of a low level ORM, where you can still use SQL and then map the result set to the class objects.
@@ -110,7 +111,7 @@ You can run the following command in the directory you want the .pm files to be 
 
 Examples:
 
-    dao-map-helper --dsn=dbi:mysql:mydb:localhost:3306 --user=root --pwd=pwd
+    dao-map-helper --dsn=dbi:mysql:mydb:localhost:3306 --user=root --pwd=pwd --package=package
 
 What are the dependencies and limitations?
 As of now it just works with mysql.
@@ -120,13 +121,14 @@ As of now it just works with mysql.
 sub Main{
   pod2usage(2) unless @ARGV;
 
-  my ($dsn,$user,$pwd);
+  my ($dsn,$user,$pwd,$package);
 
 
   GetOptions(
         'dsn=s'    => \$dsn,
         'user=s'   => \$user,
-        'pwd=s'      => \$pwd
+        'pwd=s'      => \$pwd,
+        'package=s'      => \$package
   ) || pod2usage(2);
 
   if (@ARGV) {
@@ -136,13 +138,13 @@ sub Main{
       );
   }
 
-  create_dao($dsn,$user,$pwd);
+  create_dao($dsn,$user,$pwd,$package);
   print "\nFinished!\n";
 }
 ##################################################################################################
 sub create_dao{
 
-    my ($dsn,$user,$pwd,$file) = @_;
+    my ($dsn,$user,$pwd,$package) = @_;
      my $dbh = DBI->connect( $dsn , $user, $pwd ) ||  croak("Unable to connect: $DBI::errstr\n");
     try{
 
@@ -151,15 +153,14 @@ sub create_dao{
         my $table_info = $sth1->fetchall_hashref('TABLE_NAME');
         foreach my $table_name ( keys %$table_info )
         {
-            print  "Generating Vo for " . $table_name . ".\n";
+            
             my $sth2 = $dbh->column_info(undef, undef, $table_name, undef);
             my $col_info = $sth2->fetchall_hashref('COLUMN_NAME');
 
-            open(FILE,">$table_name"."Vo.pm");
-
-
-
-            print FILE "package Vo::".$table_name."Vo;\n";
+			$table_name = ucfirst($table_name);	
+            print  "use " . $package . "::Vo::$table_name"."_Vo;" . "\n";
+            open(FILE,">$table_name"."_Vo.pm");
+            print FILE "package ". $package . "::Vo::".$table_name."_Vo;\n";
             print FILE "use strict;\n";
             print FILE "use warnings;\n";
             print FILE "sub new {\n";
@@ -176,6 +177,7 @@ sub create_dao{
             print FILE "\tbless(\$self);\n";
             print FILE "\treturn \$self;\n";
             print FILE "}\n";
+            print FILE "return 1;";
 
             close(FILE);
 

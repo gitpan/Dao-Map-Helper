@@ -24,7 +24,7 @@ name: Dao-Map-Helper
 provides:
   Dao::Map::Helper:
     file: lib/Dao/Map/Helper.pm
-    version: 0.03
+    version: 0.04
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.03
+version: 0.04
